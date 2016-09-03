@@ -474,7 +474,19 @@ import { Viewport } from './Viewport.js';
       }, true);
 
       on(term.textarea, 'keypress', function(ev) {
+        console.log(ev);
+        if(ev.key && ev.key.length === 1) {
+          return;
+        }
         term.keyPress(ev);
+        // Truncate the textarea's value, since it is not needed
+        this.value = '';
+      }, true);
+
+      // WAS KEYPRESS
+      on(term.textarea, 'keydown', function(ev) {
+        console.log(ev);
+        term.keyPress2(ev);
         // Truncate the textarea's value, since it is not needed
         this.value = '';
       }, true);
@@ -2671,6 +2683,20 @@ import { Viewport } from './Viewport.js';
       }
     };
 
+    Terminal.prototype.keyPress2 = function(ev) {
+      if(!(ev.key && ev.key.length === 1)) {
+        return;
+      }
+
+      var ev2 = {};
+      for(var key in ev) {
+        ev2[key] = ev[key];
+      }
+      ev = ev2;
+      ev.charCode = ev.key.charCodeAt(0);
+      return this.keyPress(ev);
+    }
+
     /**
      * Handle a keypress event.
      * Key Resources:
@@ -2679,9 +2705,8 @@ import { Viewport } from './Viewport.js';
      */
     Terminal.prototype.keyPress = function(ev) {
       var key;
-
       this.cancel(ev);
-
+      
       if (ev.charCode) {
         key = ev.charCode;
       } else if (ev.which == null) {
