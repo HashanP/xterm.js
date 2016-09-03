@@ -1041,7 +1041,8 @@ import { Viewport } from './Viewport.js';
       UNDERLINE: 2,
       BLINK: 4,
       INVERSE: 8,
-      INVISIBLE: 16
+      INVISIBLE: 16,
+      ITALIC: 32
     }
 
     /**
@@ -1174,6 +1175,10 @@ import { Viewport } from './Viewport.js';
                   // See: XTerm*boldColors
                   if (fg < 8) fg += 8;
                 }
+
+		if(flags & Terminal.flags.ITALIC) {
+		  classNames.push("xterm-italic");
+		}
 
                 if (flags & Terminal.flags.UNDERLINE) {
                   classNames.push('xterm-underline');
@@ -3393,7 +3398,9 @@ import { Viewport } from './Viewport.js';
         } else if (p === 1) {
           // bold text
           flags |= 1;
-        } else if (p === 4) {
+        } else if (p === 3) {
+	  flags |= 32;
+	} else if (p === 4) {
           // underlined text
           flags |= 2;
         } else if (p === 5) {
@@ -3409,7 +3416,9 @@ import { Viewport } from './Viewport.js';
         } else if (p === 22) {
           // not bold
           flags &= ~1;
-        } else if (p === 24) {
+        } else if (p === 23) {
+	  flags &= ~32;
+	} else if (p === 24) {
           // not underlined
           flags &= ~2;
         } else if (p === 25) {
